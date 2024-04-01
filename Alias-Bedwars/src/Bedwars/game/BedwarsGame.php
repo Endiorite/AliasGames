@@ -11,7 +11,10 @@ use Alias\players\Scoreboard;
 use Alias\utils\Utils;
 use Bedwars\constants\BedwarsMessages;
 use Bedwars\game\maps\MythologyMap;
+use Bedwars\game\teams\BlueBedwars;
+use Bedwars\game\teams\GreenTeam;
 use Bedwars\game\teams\RedTeam;
+use Bedwars\game\teams\YellowTeam;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\player\Player;
@@ -31,7 +34,10 @@ class BedwarsGame extends TeamableGame
     {
         parent::init($uuid, $isRanked);
         $world = $this->getWorld();
-        $this->addTeam(new RedTeam(new Position(0, 0, 0, $world), new Position(0, 0, 0, $world)));
+        $this->addTeam(new RedTeam(2));
+        $this->addTeam(new BlueBedwars(2));
+        $this->addTeam(new GreenTeam(2));
+        $this->addTeam(new YellowTeam(2));
 
         $this->time = time() + 15*60;
     }
