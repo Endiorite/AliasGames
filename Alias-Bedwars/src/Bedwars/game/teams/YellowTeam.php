@@ -1,0 +1,27 @@
+<?php
+
+/*
+ *  ______           _ _            _ _
+ * |  ____|         | (_)          (_) |
+ * | |__   _ __   __| |_  ___  _ __ _| |_ ___
+ * |  __| | '_ \ / _` | |/ _ \| '__| | __/ _ \
+ * | |____| | | | (_| | | (_) | |  | | ||  __/
+ * |______|_| |_|\__,_|_|\___/|_|  |_|\__\___|
+ *
+ * @author Endiorite Team
+ * @link http://www.endiorite.fr/
+ */
+
+namespace Bedwars\game\teams;
+
+use pocketmine\block\utils\DyeColor;
+use pocketmine\math\Vector3;
+use pocketmine\world\Position;
+
+class YellowTeam extends \Bedwars\game\BedwarsTeam
+{
+    public function __construct(int $max_players = 2)
+    {
+        parent::__construct("§eYellow", "yellow", new Vector3(137, 87, 436), DyeColor::YELLOW(), $max_players);
+    }
+}
