@@ -2,8 +2,10 @@
 
 namespace Bedwars\game;
 
+use Alias\game\Team;
 use Alias\players\AliasPlayer;
 use Bedwars\constants\BedwarsMessages;
+use Bedwars\game\teams\TeamUpgrade;
 use pocketmine\block\Bed;
 use pocketmine\block\utils\DyeColor;
 use pocketmine\block\VanillaBlocks;
@@ -17,12 +19,22 @@ class BedwarsTeam extends \Alias\game\Team
     private bool $bedDestroy = false;
     private int $teamDestroy = 0;
     private DyeColor $dyeColor;
+    private TeamUpgrade $teamUpgrade;
 
     public function __construct(string $name, string $identifier, Vector3 $bedPosition, DyeColor $dyeColor, int $max_players = 2)
     {
         $this->bedPosition = $bedPosition;
         $this->dyeColor = $dyeColor;
+        $this->teamUpgrade = new TeamUpgrade();
         parent::__construct($name, $identifier, $max_players);
+    }
+
+    /**
+     * @return TeamUpgrade
+     */
+    public function getTeamUpgrade(): TeamUpgrade
+    {
+        return $this->teamUpgrade;
     }
 
     public function getDyeColor(): DyeColor{
@@ -39,7 +51,7 @@ class BedwarsTeam extends \Alias\game\Team
             if (is_null($game)) continue;
 
             $playerGame = $game->getPlayerGame($player->getName());
-            if ($playerGame->life > 0){
+            if ($playerGame->getLife() > 0){
                 $players[] = $player;
             }
         }

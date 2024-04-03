@@ -12,7 +12,7 @@
  * @link http://www.endiorite.fr/
  */
 
-namespace Bedwars\entities;
+namespace Bedwars\game\shops;
 
 use pocketmine\item\Item;
 
@@ -24,25 +24,33 @@ class ShopItem
     const EMERALD = 2;
     const DIAMOND = 3;
 
-    private Item $item;
+    /**
+     * @var Item[]
+     */
+    private Item|array $item;
     private int $price;
     private int $type;
     private string $description = "";
 
-    public function __construct(Item $item, int $price, int $type, string $description = "")
+    public function __construct(Item|array $item, int $price, int $type, string $description = "")
     {
-        $this->item = $item;
+        $this->item = is_array($item) ? $item : [$item];
         $this->price = $price;
         $this->type = $type;
         $this->description = $description;
     }
 
+    public function getItems(): array{
+        return $this->item;
+    }
+
     /**
+     * @param int $count
      * @return Item
      */
-    public function getItem(int $count): Item
+    public function getDisplayItem(int $count): Item
     {
-        $item = $this->item;
+        $item = $this->item[array_key_first($this->item)];
         $item->setCustomName("§2" . $item->getName());
         $price = match ($this->type){
             self::GOLD => "§6" . $this->price . " gold",
@@ -56,7 +64,7 @@ class ShopItem
             $count < $this->price => "§cYou can't buy this item !"
         };
         $item->setLore([
-            "§7Price:" . $this->price,
+            "§7Cost:" . $price,
             "     ",
             $this->description,
             "      ",

@@ -12,7 +12,7 @@
  * @link http://www.endiorite.fr/
  */
 
-namespace Bedwars\entities;
+namespace Bedwars\game\shops;
 
 use pocketmine\item\Item;
 

@@ -14,5 +14,8 @@ class BedwarsMessages
     const TEAMBED_BREAK = self::PREFIX . "Votre lit à été casser, vous ne pouvez plus réapparaitre !";
 
     const BREAK_ALL_BED = self::PREFIX . "§c§lMort Subite§r§f Tout les §clit§f restant on été cassé !";
+    const TEAM_ELIMINATED = self::PREFIX . "{team}§r§f à été éliminée";
+    const ERROR = self::PREFIX . "§cAn error occured";
+    const TEAMUPGRADE = self::PREFIX . "§7Vous avez débloqué l'amélioration: §c{name}";
 
 }

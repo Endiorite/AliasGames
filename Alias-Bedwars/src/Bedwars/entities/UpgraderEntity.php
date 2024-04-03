@@ -60,15 +60,14 @@ class UpgraderEntity extends \pocketmine\entity\Entity
                 $this->openInterface($source->getDamager());
             }
         }
+        $source->cancel();
     }
 
     public function openInterface(Player|AliasPlayer $player){
         if(($game = $player->getGame()) === null or !$game instanceof BedwarsGame) return;
 
         $team = $game->getPlayerTeam($player);
-        $playerGame = $game->getPlayerGame($player->getName());
 
-        $gold = Utils::getItemCountInInventory($player, VanillaItems::GOLD_INGOT());
-        $iron = Utils::getItemCountInInventory($player, VanillaItems::IRON_INGOT());
+        $player->sendForm();
     }
 }

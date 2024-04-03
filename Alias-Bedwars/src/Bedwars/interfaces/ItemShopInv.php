@@ -14,16 +14,20 @@
 
 namespace Bedwars\interfaces;
 
-use Bedwars\entities\ItemShopCategory;
-use Bedwars\entities\ShopItem;
+use Alias\players\AliasPlayer;
+use Bedwars\game\BedwarsGame;
+use Bedwars\game\shops\ItemShopCategory;
+use Bedwars\game\shops\ShopItem;
 use Bedwars\Utils;
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\InvMenuHandler;
 use muqsit\invmenu\transaction\DeterministicInvMenuTransaction;
-use muqsit\invmenu\type\InvMenuType;
 use pocketmine\block\utils\DyeColor;
 use pocketmine\block\VanillaBlocks;
-use pocketmine\inventory\Inventory;
+use pocketmine\inventory\ArmorInventory;
+use pocketmine\item\Armor;
+use pocketmine\item\enchantment\EnchantmentInstance;
+use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
@@ -47,14 +51,20 @@ class ItemShopInv extends \muqsit\invmenu\InvMenu
             $nbt = $item->getNamedTag();
             $inv = $transaction->getAction()->getInventory();
 
+            if(!$player instanceof AliasPlayer or is_null(($game = $player->getGame())) or !$game instanceof BedwarsGame or $game->isSpectate($player)) return;
+            $playerGame = $game->getPlayerGame($player->getName());
+            $team = $game->getPlayerTeam($player);
+            $upgrade = $team->getTeamUpgrade();
+
             if (($categoryName = $nbt->getString("categoryShop", "default")) !== "default"){
                 $menu->setCategory($categoryName);
                 $menu->display($player);
                 return;
             }
 
-            if (($price = $nbt->getInt("itemShop", -1)) !== -1){
+            if (($price = $nbt->getInt("itemShop", -1)) !== -1 && ($index = $nbt->getString("indexArray", "null")) !== "null"){
                 $type = $nbt->getInt("itemType", 0);
+                $explode = explode(":", $index);
 
                 $money = match ($type){
                     ShopItem::GOLD => VanillaItems::GOLD_INGOT(),
@@ -64,17 +74,23 @@ class ItemShopInv extends \muqsit\invmenu\InvMenu
                 };
 
                 if (Utils::playerHasCountItem($player, $money, $price)){
-                    $newItem = StringToItemParser::getInstance()->parse($item->getVanillaName());
-                    $newItem->setCount($item->getCount());
-                    foreach ($item->getEnchantments() as $enchantment){
-                        $newItem->addEnchantment($enchantment);
-                    }
+                    foreach ($game->getItemShop()[$explode[0]][$explode[1]] as $item){
+                        if ($item instanceof Armor){
+                            if ($upgrade->getProtectionArmor() > 0){
+                                $enchant = new EnchantmentInstance(VanillaEnchantments::PROTECTION(), $upgrade->getProtectionArmor());
+                                $item->addEnchantment($enchant);
+                            }
 
-                    if ($player->getInventory()->canAddItem($newItem)){
-                        $player->getInventory()->addItem($newItem);
-                    }else{
-                        $world = $player->getWorld();
-                        $world->dropItem($player->getPosition(), $newItem, null, 20);
+                            $player->getArmorInventory()->setItem($item->getArmorSlot(), $item);
+                            return;
+                        }
+
+                        if ($player->getInventory()->canAddItem($item)){
+                            $player->getInventory()->addItem($item);
+                        }else{
+                            $world = $player->getWorld();
+                            $world->dropItem($player->getPosition(), $item, null, 20);
+                        }
                     }
                 }
             }
@@ -115,7 +131,7 @@ class ItemShopInv extends \muqsit\invmenu\InvMenu
 
         $startingSlot = 19;
         $slot = 0;
-        foreach ($category->getItems() as $item){
+        foreach ($category->getItems() as $index => $item){
             if ($slot > 6){
                 $startingSlot += 2;
                 $slot = 0;
@@ -127,7 +143,12 @@ class ItemShopInv extends \muqsit\invmenu\InvMenu
                 ShopItem::EMERALD => Utils::getItemCountInInventory($player, VanillaItems::EMERALD()),
                 ShopItem::DIAMOND => Utils::getItemCountInInventory($player, VanillaItems::DIAMOND())
             };
-            $inv->setItem($startingSlot+$slot, $item->getItem($count));
+            $item = $item->getDisplayItem($count);
+            $nbt = $item->getNamedTag();
+            $nbt->setString("indexArray",implode(":", [$this->currentCategory, $index]));
+            $item->setNamedTag($nbt);
+
+            $inv->setItem($startingSlot+$slot, $item);
         }
     }
 
