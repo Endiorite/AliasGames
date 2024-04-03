@@ -29,6 +29,7 @@ use pocketmine\item\Armor;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\StringToItemParser;
+use pocketmine\item\Sword;
 use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 
@@ -80,9 +81,15 @@ class ItemShopInv extends \muqsit\invmenu\InvMenu
                                 $enchant = new EnchantmentInstance(VanillaEnchantments::PROTECTION(), $upgrade->getProtectionArmor());
                                 $item->addEnchantment($enchant);
                             }
-
                             $player->getArmorInventory()->setItem($item->getArmorSlot(), $item);
                             return;
+                        }
+
+                        if ($item instanceof Sword){
+                            $currentEnchant = $item->getEnchantment(VanillaEnchantments::SHARPNESS());
+                            if (is_null($currentEnchant) or $currentEnchant->getLevel() < $upgrade->getSharpness()){
+                                $item->addEnchantment(new EnchantmentInstance(VanillaEnchantments::SHARPNESS(), $upgrade->getSharpness()));
+                            }
                         }
 
                         if ($player->getInventory()->canAddItem($item)){
@@ -145,7 +152,7 @@ class ItemShopInv extends \muqsit\invmenu\InvMenu
             };
             $item = $item->getDisplayItem($count);
             $nbt = $item->getNamedTag();
-            $nbt->setString("indexArray",implode(":", [$this->currentCategory, $index]));
+            $nbt->setString("indexArray", implode(":", [$this->currentCategory, $index]));
             $item->setNamedTag($nbt);
 
             $inv->setItem($startingSlot+$slot, $item);

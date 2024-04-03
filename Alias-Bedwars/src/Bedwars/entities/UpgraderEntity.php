@@ -16,6 +16,7 @@ namespace Bedwars\entities;
 
 use Alias\players\AliasPlayer;
 use Bedwars\game\BedwarsGame;
+use Bedwars\interfaces\UpgradeForm;
 use Bedwars\Utils;
 use pocketmine\entity\EntitySizeInfo;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -68,6 +69,6 @@ class UpgraderEntity extends \pocketmine\entity\Entity
 
         $team = $game->getPlayerTeam($player);
 
-        $player->sendForm();
+        $player->sendForm(new UpgradeForm($game, $team, $player));
     }
 }

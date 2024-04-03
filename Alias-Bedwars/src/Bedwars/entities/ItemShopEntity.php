@@ -72,9 +72,6 @@ class ItemShopEntity extends \pocketmine\entity\Entity
     public function openInterface(Player|AliasPlayer $player){
         if(($game = $player->getGame()) === null or !$game instanceof BedwarsGame) return;
 
-        $team = $game->getPlayerTeam($player);
-        $playerGame = $game->getPlayerGame($player->getName());
-
         $inv = new ItemShopInv();
         $inv->setCategories($game->getItemShop());
         $inv->display($player);

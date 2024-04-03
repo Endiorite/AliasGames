@@ -5,6 +5,7 @@ namespace Bedwars\game;
 use Alias\game\Team;
 use Alias\players\AliasPlayer;
 use Bedwars\constants\BedwarsMessages;
+use Bedwars\game\generators\Generator;
 use Bedwars\game\teams\TeamUpgrade;
 use pocketmine\block\Bed;
 use pocketmine\block\utils\DyeColor;
@@ -20,6 +21,10 @@ class BedwarsTeam extends \Alias\game\Team
     private int $teamDestroy = 0;
     private DyeColor $dyeColor;
     private TeamUpgrade $teamUpgrade;
+    private Generator $ironGenerator;
+    private Generator $goldGenerator;
+    private Generator $emeraldGenerator;
+    private int $lastGenerate = 0;
 
     public function __construct(string $name, string $identifier, Vector3 $bedPosition, DyeColor $dyeColor, int $max_players = 2)
     {
@@ -27,6 +32,68 @@ class BedwarsTeam extends \Alias\game\Team
         $this->dyeColor = $dyeColor;
         $this->teamUpgrade = new TeamUpgrade();
         parent::__construct($name, $identifier, $max_players);
+    }
+
+    /**
+     * @param Generator $emeraldGenerator
+     */
+    public function setEmeraldGenerator(Generator $emeraldGenerator): void
+    {
+        $this->emeraldGenerator = $emeraldGenerator;
+    }
+
+    /**
+     * @param Generator $goldGenerator
+     */
+    public function setGoldGenerator(Generator $goldGenerator): void
+    {
+        $this->goldGenerator = $goldGenerator;
+    }
+
+    /**
+     * @param Generator $ironGenerator
+     */
+    public function setIronGenerator(Generator $ironGenerator): void
+    {
+        $this->ironGenerator = $ironGenerator;
+    }
+    /**
+     * @return Generator
+     */
+    public function getEmeraldGenerator(): Generator
+    {
+        return $this->emeraldGenerator;
+    }
+
+    /**
+     * @return Generator
+     */
+    public function getGoldGenerator(): Generator
+    {
+        return $this->goldGenerator;
+    }
+
+    /**
+     * @return Generator
+     */
+    public function getIronGenerator(): Generator
+    {
+        return $this->ironGenerator;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLastGenerate(): int
+    {
+        return $this->lastGenerate;
+    }
+
+    /**
+     */
+    public function setLastGenerate(): void
+    {
+        $this->lastGenerate = time();
     }
 
     /**

@@ -14,6 +14,9 @@
 
 namespace Bedwars\game\teams;
 
+use Alias\game\Team;
+use Bedwars\game\BedwarsTeam;
+
 class TeamUpgrade
 {
 
@@ -39,9 +42,34 @@ class TeamUpgrade
     /**
      * @return void
      */
-    public function upgradeforge(): void
+    public function upgradeforge(BedwarsTeam $team): void
     {
         $this->forgeLevel++;
+        switch ($this->forgeLevel){
+            case 1:
+                $speed = $team->getIronGenerator()->getSpeed();
+                $team->getIronGenerator()->setSpeed(intval($speed/0.75));
+                $speed = $team->getGoldGenerator()->getSpeed();
+                $team->getGoldGenerator()->setSpeed(intval($speed/0.75));
+                break;
+            case 2:
+                $speed = $team->getIronGenerator()->getSpeed();
+                $team->getIronGenerator()->setSpeed(intval($speed/1.28));
+                $speed = $team->getGoldGenerator()->getSpeed();
+                $team->getGoldGenerator()->setSpeed(intval($speed/1.28));
+                break;
+            case 3:
+                $team->getEmeraldGenerator()->setSpeed(20);
+                break;
+            case 4:
+                $speed = $team->getIronGenerator()->getSpeed();
+                $team->getIronGenerator()->setSpeed(intval($speed/2));
+                $speed = $team->getGoldGenerator()->getSpeed();
+                $team->getGoldGenerator()->setSpeed(intval($speed/2));
+                $speed = $team->getEmeraldGenerator()->getSpeed();
+                $team->getEmeraldGenerator()->setSpeed(intval($speed/2));
+                break;
+        }
     }
 
     /**
