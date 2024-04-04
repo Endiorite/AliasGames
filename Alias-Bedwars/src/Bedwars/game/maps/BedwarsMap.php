@@ -54,6 +54,8 @@ class BedwarsMap extends \Alias\game\TeamableMap
         foreach ($this->generators as $generator){
             $generator->setWorld($game->getWorld());
             $generator->spawnEntity();
+
+            $game->addGenerator($generator);
         }
     }
 

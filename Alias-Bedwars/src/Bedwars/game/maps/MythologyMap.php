@@ -6,9 +6,12 @@ use Alias\game\Game;
 use Alias\game\Map;
 use Alias\game\spawners\GameSpawner;
 use Alias\game\spawners\TeamSpawner;
+use Alias\game\Team;
 use Alias\game\TeamableMap;
 use Bedwars\game\BedwarsGame;
 use Bedwars\game\BedwarsTeam;
+use Bedwars\game\generators\DiamondGenerator;
+use Bedwars\game\generators\EmeraldGenerator;
 use Bedwars\game\generators\TeamGenerator;
 use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
@@ -29,10 +32,48 @@ class MythologyMap extends BedwarsMap
             ],
             [
                 "red" => [
-                    "iron" => new TeamGenerator(VanillaItems::IRON_INGOT(), 5, new Vector3(0, 0, 0), )
-                ]
+                    new TeamGenerator(VanillaItems::IRON_INGOT(), 30, 5, new Vector3(145, 81, 226)),
+                    new TeamGenerator(VanillaItems::GOLD_INGOT(), 30, 3, new Vector3(145, 81, 226)),
+                    new TeamGenerator(VanillaItems::EMERALD(), PHP_INT_MAX, 1, new Vector3(145, 81, 226)),
+                    new TeamGenerator(VanillaItems::IRON_INGOT(), PHP_INT_MAX, 5, new Vector3(140, 90, 237)),
+                    new TeamGenerator(VanillaItems::GOLD_INGOT(), PHP_INT_MAX, 3, new Vector3(140, 90, 237)),
+                    new TeamGenerator(VanillaItems::EMERALD(), PHP_INT_MAX, 1, new Vector3(140, 90, 237)),
+                ],
+                "blue" => [
+                    new TeamGenerator(VanillaItems::IRON_INGOT(), 30, 5, new Vector3(249, 79, 345)),
+                    new TeamGenerator(VanillaItems::GOLD_INGOT(), 30, 3, new Vector3(249, 79, 345)),
+                    new TeamGenerator(VanillaItems::EMERALD(), PHP_INT_MAX, 1, new Vector3(249, 79, 345)),
+                    new TeamGenerator(VanillaItems::IRON_INGOT(), PHP_INT_MAX, 5, new Vector3(238, 88, 340)),
+                    new TeamGenerator(VanillaItems::GOLD_INGOT(), PHP_INT_MAX, 3, new Vector3(238, 88, 340)),
+                    new TeamGenerator(VanillaItems::EMERALD(), PHP_INT_MAX, 1, new Vector3(238, 88, 340)),
+                ],
+                "yellow" => [
+                    new TeamGenerator(VanillaItems::IRON_INGOT(), 30, 5, new Vector3(131, 78, 458)),
+                    new TeamGenerator(VanillaItems::GOLD_INGOT(), 30, 3, new Vector3(131, 78, 458)),
+                    new TeamGenerator(VanillaItems::EMERALD(), PHP_INT_MAX, 1, new Vector3(131, 78, 458)),
+                    new TeamGenerator(VanillaItems::IRON_INGOT(), PHP_INT_MAX, 5, new Vector3(136, 87, 447)),
+                    new TeamGenerator(VanillaItems::GOLD_INGOT(), PHP_INT_MAX, 3, new Vector3(136, 87, 447)),
+                    new TeamGenerator(VanillaItems::EMERALD(), PHP_INT_MAX, 1, new Vector3(136, 87, 447)),
+                ],
+                "green" => [
+                    new TeamGenerator(VanillaItems::IRON_INGOT(), 30, 5, new Vector3(30, 80, 330)),
+                    new TeamGenerator(VanillaItems::GOLD_INGOT(), 30, 3, new Vector3(30, 80, 330)),
+                    new TeamGenerator(VanillaItems::EMERALD(), PHP_INT_MAX, 1, new Vector3(30, 80, 330)),
+                    new TeamGenerator(VanillaItems::IRON_INGOT(), PHP_INT_MAX, 5, new Vector3(41, 89, 335)),
+                    new TeamGenerator(VanillaItems::GOLD_INGOT(), PHP_INT_MAX, 3, new Vector3(41, 89, 335)),
+                    new TeamGenerator(VanillaItems::EMERALD(), PHP_INT_MAX, 1, new Vector3(41, 89, 335)),
+                ],
             ],
-            []);
+            [
+                new DiamondGenerator(60, new Vector3(194, 87,283)),
+                new DiamondGenerator(60, new Vector3(193, 87, 402)),
+                new DiamondGenerator(60, new Vector3(86, 87, 402)),
+                new DiamondGenerator(60, new Vector3(85, 88, 280)),
+                new EmeraldGenerator(90, new Vector3(124, 89, 324)),
+                new EmeraldGenerator(90, new Vector3(124, 89, 352)),
+                new EmeraldGenerator(90, new Vector3(152, 89, 352)),
+                new EmeraldGenerator(90, new Vector3(152, 89, 324))
+            ]);
     }
 
 }

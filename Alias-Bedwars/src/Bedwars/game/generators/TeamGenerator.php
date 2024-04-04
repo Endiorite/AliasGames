@@ -12,11 +12,11 @@ class TeamGenerator extends Generator
 
     private Item $item;
     private int $maxSpawn;
-    public function __construct(Item $item, int $maxSpawn, Vector3 $position)
+    public function __construct(Item $item, int $defaultSpeed, int $maxSpawn, Vector3 $position)
     {
         $this->item = $item;
         $this->maxSpawn = $maxSpawn;
-        parent::__construct($position);
+        parent::__construct($defaultSpeed, $position);
     }
 
     public function getBlockItem(): Item

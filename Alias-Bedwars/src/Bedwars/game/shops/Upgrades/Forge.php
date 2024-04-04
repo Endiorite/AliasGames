@@ -20,6 +20,7 @@ class Forge extends BaseUpgrade
             2 => "§cGolden Forge",
             3 => "§cEmerald Forge",
             4 => "§cMolten Forge",
+            5 => "§cSecond Forge",
             default => "§cForge"
         };
     }
@@ -31,6 +32,6 @@ class Forge extends BaseUpgrade
 
     public function max(TeamUpgrade $upgrade): bool
     {
-        return $upgrade->getForgeLevel() >= 4;
+        return $upgrade->getForgeLevel() >= 5;
     }
 }

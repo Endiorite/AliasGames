@@ -16,9 +16,16 @@ namespace Bedwars\game\teams;
 
 use Alias\game\Team;
 use Bedwars\game\BedwarsTeam;
+use pocketmine\item\VanillaItems;
 
 class TeamUpgrade
 {
+
+    private Team $team;
+    public function __construct(Team $team)
+    {
+        $this->team = $team;
+    }
 
     private bool $healPool = false;
     private int $forgeLevel = 1;
@@ -42,32 +49,42 @@ class TeamUpgrade
     /**
      * @return void
      */
-    public function upgradeforge(BedwarsTeam $team): void
+    public function upgradeForge(): void
     {
+        $team =$this->team;
         $this->forgeLevel++;
         switch ($this->forgeLevel){
             case 1:
-                $speed = $team->getIronGenerator()->getSpeed();
-                $team->getIronGenerator()->setSpeed(intval($speed/0.75));
-                $speed = $team->getGoldGenerator()->getSpeed();
-                $team->getGoldGenerator()->setSpeed(intval($speed/0.75));
+                foreach ($team->getGenerators() as $index => $generator){
+                    if ($index >= 2) break;
+                    $generator->setSpeed(18);
+                }
                 break;
             case 2:
-                $speed = $team->getIronGenerator()->getSpeed();
-                $team->getIronGenerator()->setSpeed(intval($speed/1.28));
-                $speed = $team->getGoldGenerator()->getSpeed();
-                $team->getGoldGenerator()->setSpeed(intval($speed/1.28));
+                foreach ($team->getGenerators() as $index => $generator){
+                    if ($index >= 2) break;
+                    $generator->setSpeed(10);
+                }
                 break;
             case 3:
-                $team->getEmeraldGenerator()->setSpeed(20);
+                foreach ($team->getGenerators() as $index => $generator){
+                    $emerald = VanillaItems::EMERALD();
+                    if ($generator->getItem() instanceof $emerald){
+                        $generator->setSpeed(16);
+                        break;
+                    }
+                }
                 break;
             case 4:
-                $speed = $team->getIronGenerator()->getSpeed();
-                $team->getIronGenerator()->setSpeed(intval($speed/2));
-                $speed = $team->getGoldGenerator()->getSpeed();
-                $team->getGoldGenerator()->setSpeed(intval($speed/2));
-                $speed = $team->getEmeraldGenerator()->getSpeed();
-                $team->getEmeraldGenerator()->setSpeed(intval($speed/2));
+                foreach ($team->getGenerators() as $index => $generator){
+                    if ($index >= 3) break;
+                    $generator->setSpeed(6);
+                }
+                break;
+            case 5:
+                foreach ($team->getGenerators() as $generator){
+                    $generator->setSpeed(6);
+                }
                 break;
         }
     }

@@ -12,6 +12,11 @@ use Alias\game\TeamableGame;
 use Alias\players\Scoreboard;
 use Alias\utils\Utils;
 use Bedwars\constants\BedwarsMessages;
+use Bedwars\game\events\BedDestroyEvent;
+use Bedwars\game\events\DiamondUpgradeEvent;
+use Bedwars\game\events\EmeraldUpgradeEvent;
+use Bedwars\game\events\Event;
+use Bedwars\game\generators\EmeraldGenerator;
 use Bedwars\game\generators\Generator;
 use Bedwars\game\maps\BedwarsMap;
 use Bedwars\game\maps\MythologyMap;
@@ -55,6 +60,15 @@ class BedwarsGame extends TeamableGame
      * @var BaseUpgrade[]
      */
     private array $upgradeShop = [];
+    /**
+     * @var Event[]
+     */
+    private array $events = [];
+
+    /**
+     * @var Generator[]
+     */
+    private array $generators = [];
 
     public function init(string $uuid, bool $isRanked): void
     {
@@ -62,7 +76,20 @@ class BedwarsGame extends TeamableGame
 
         $this->initItemShop();
         $this->initTeam();
-        $this->time = time() + 15*60;
+        $this->initUpgrade();
+        $this->initEvent();
+        $this->time = time() + 30*60;
+    }
+
+    public function initEvent(): void{
+        $this->events = [
+            new DiamondUpgradeEvent("§bDiamond II", 5),
+            new EmeraldUpgradeEvent("§2Emerald III", 10),
+            new DiamondUpgradeEvent("§bDiamond III", 15),
+            new EmeraldUpgradeEvent("§2Emerald III", 20),
+            new BedDestroyEvent("§cBed Destroy")
+        ];
+
     }
 
     public function initUpgrade(): void{
@@ -164,24 +191,30 @@ class BedwarsGame extends TeamableGame
                 $team->bedBreak();
             }
 
-            $team->getEmeraldGenerator()->onUpdate();
-            $team->getIronGenerator()->onUpdate();
-            $team->getGoldGenerator()->onUpdate();
+            foreach ($team->getGenerators() as $generator){
+                $generator->onUpdate();
+            }
         }
 
         foreach ($this->getMap()->getGenerators() as $generator){
             $generator->onUpdate();
         }
 
-        $time = Utils::getInstance()->convertTime($restantTime);
+        $restantTimeConvert = Utils::getInstance()->convertTime($restantTime);
 
+        $nextEvent = $this->getNextEvent();
         foreach ($this->getAvailablePlayers() as $player){
             $player = $player->getPlayer();
             $team = $this->getPlayerTeam($player);
             $scoreboard = new Scoreboard($player->getName(), "bedwars.scoreboard", "§l§eBEDWARS");
             $scoreboard->setLine(0, TextFormat::GRAY . $this->getUuid());
             $scoreboard->setLine(1, "      ");
-            $scoreboard->setLine(2, "Bed Destruction dans §2" . $time["minutes"] . ":" . $time["seconds"]);
+            if (!is_null($nextEvent)){
+                $eventTimeConvert = Utils::getInstance()->convertTime($nextEvent->getTime() - time());
+                $scoreboard->setLine(2, $nextEvent->getName() . "§r§f dans §2" . $eventTimeConvert["minutes"] . ":" . $eventTimeConvert["seconds"]);
+            }else{
+                $scoreboard->setLine(2, "Fin de la partie dans §2" . $restantTimeConvert["minutes"] . ":" . $restantTimeConvert["seconds"]);
+            }
             $scoreboard->setLine(3, "      ");
             $line = 4;
             foreach ($this->getTeams() as $team){
@@ -207,14 +240,13 @@ class BedwarsGame extends TeamableGame
             $scoreboard->show();
         }
 
-        if ($restantTime <= 0 && !$this->instantDeath){
-            $this->broadcastMessage(BedwarsMessages::BREAK_ALL_BED);
-            $this->instantDeath = true;
-
-            foreach ($this->getTeams() as $team){
-                $team->bedBreak();
+        foreach ($this->events as $index => $event){
+            if ($event->isTime()){
+                $event->execute($this);
+                unset($this->events[$index]);
             }
         }
+
     }
 
     public function onBlockBreak(BlockBreakEvent $event): void
@@ -288,6 +320,28 @@ class BedwarsGame extends TeamableGame
         if (count($team->getRestantPlayers()) <= 0){
             $this->broadcastMessage(str_replace("{team}", $team->getName(), BedwarsMessages::TEAM_ELIMINATED));
         }
+    }
+
+    public function getNextEvent(): ?Event{
+        $next = null;
+        foreach ($this->events as $event){
+            if (is_null($next) or ($next->getTime() - time()) > ($event->getTime() - time())){
+                $next = $event;
+            }
+        }
+        return $next;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGenerators(): array
+    {
+        return $this->generators;
+    }
+
+    public function addGenerator(Generator $generator): void{
+        $this->generators[] = $generator;
     }
 
     public function getPlayerTeam(Player $player): BedwarsTeam|Team|null

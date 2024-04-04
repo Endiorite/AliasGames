@@ -17,5 +17,6 @@ class BedwarsMessages
     const TEAM_ELIMINATED = self::PREFIX . "{team}§r§f à été éliminée";
     const ERROR = self::PREFIX . "§cAn error occured";
     const TEAMUPGRADE = self::PREFIX . "§7Vous avez débloqué l'amélioration: §c{name}";
+    const DIAMONDGENERATORUPGRADE = self::PREFIX . "Tout les générateurs de §bdiaman§f sont passer Tier {tier}";
 
 }

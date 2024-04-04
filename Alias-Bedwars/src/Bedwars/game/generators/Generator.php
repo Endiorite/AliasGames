@@ -19,7 +19,7 @@ abstract class Generator
     private int $speed = 15;
     private int $tier = 1;
     private ?ItemEntity $entity = null;
-    public function __construct(Vector3 $position)
+    public function __construct(int $defaultSpeed, Vector3 $position)
     {
         $this->position = $position;
 
@@ -28,6 +28,8 @@ abstract class Generator
                 $this->spawnEntity();
             }
         }
+
+        $this->speed = $defaultSpeed;
     }
 
     /**
@@ -98,6 +100,7 @@ abstract class Generator
         $this->entity->setNameTagAlwaysVisible();
         $this->entity->setNameTagVisible();
         $this->entity->setNameTag($this->getName() . " " . str_repeat("I", $this->tier));
+        $this->entity->spawnToAll();
     }
 
     /**
