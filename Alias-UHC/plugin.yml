@@ -1,0 +1,9 @@
+name: Alias-GameUHC
+author: Fanouu
+version: 1.0.0
+main: UHC\Main
+api: [5.0.0]
+description: "All UHC Games for Alias using AliasCore and propulsed by Alias GameManager"
+
+depend:
+  - AliasCore

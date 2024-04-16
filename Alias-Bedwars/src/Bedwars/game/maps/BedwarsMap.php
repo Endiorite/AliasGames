@@ -3,6 +3,7 @@
 namespace Bedwars\game\maps;
 
 use Alias\game\Game;
+use Alias\game\maps\TeamableMap;
 use Alias\game\spawners\GameSpawner;
 use Bedwars\game\BedwarsGame;
 use Bedwars\game\generators\Generator;
@@ -10,7 +11,7 @@ use Bedwars\game\generators\TeamGenerator;
 use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
 
-class BedwarsMap extends \Alias\game\TeamableMap
+class BedwarsMap extends TeamableMap
 {
 
     /**
