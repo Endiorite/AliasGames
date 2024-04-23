@@ -14,6 +14,8 @@
 
 namespace UHC;
 
+use Alias\managers\GameManager;
+use UHC\games\ClassicUHC;
 use UHC\generators\BasicGenerator\BasicGameGenerator;
 use pocketmine\world\generator\GeneratorManager;
 
@@ -22,6 +24,7 @@ class Main extends \pocketmine\plugin\PluginBase
 
     protected function onEnable(): void
     {
+        GameManager::getInstance()->registerGame("classic_uhc", new ClassicUHC());
         GeneratorManager::getInstance()->addGenerator(BasicGameGenerator::class, "basicgame_generator", fn() => null);
     }
 }

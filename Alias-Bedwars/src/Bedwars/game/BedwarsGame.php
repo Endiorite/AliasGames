@@ -4,6 +4,7 @@ namespace Bedwars\game;
 
 use Alias\game\Game;
 use Alias\game\GameInformation;
+use Alias\game\GameProperties;
 use Alias\game\GameType;
 use Alias\game\GameVariant;
 use Alias\game\maps\Map;
@@ -88,7 +89,7 @@ class BedwarsGame extends TeamableGame
             new EmeraldUpgradeEvent("§2Emerald III", 10),
             new DiamondUpgradeEvent("§bDiamond III", 15),
             new EmeraldUpgradeEvent("§2Emerald III", 20),
-            new BedDestroyEvent("§cBed Destroy")
+            new BedDestroyEvent(25)
         ];
 
     }
@@ -389,12 +390,17 @@ class BedwarsGame extends TeamableGame
         return parent::getMap();
     }
 
+    public function getGameInformation(): GameInformation
+    {
+        return new GameInformation("bedwars", "Bedwars Classic", "Destroy Team Bed to twin", false, true);
+    }
+
     public function getVariants(): array
     {
         return [
-            "solo" => new GameVariant("solo", new GameInformation("bedwars", PHP_INT_MAX, 2, 4), [new MythologyMap()]),
-            "duo" => new GameVariant("duo", new GameInformation("bedwars", PHP_INT_MAX, 4, 8), [new MythologyMap()]),
-            "squad" => new GameVariant("squad", new GameInformation("bedwars", PHP_INT_MAX, 8, 16), [new MythologyMap()])
+            "solo" => new GameVariant("solo", new GameProperties(PHP_INT_MAX, false, 2, 4), [new MythologyMap()]),
+            "duo" => new GameVariant("duo", new GameProperties(PHP_INT_MAX, false, 4, 8), [new MythologyMap()]),
+            "squad" => new GameVariant("squad", new GameProperties(PHP_INT_MAX, false, 8, 16), [new MythologyMap()])
         ];
     }
 }

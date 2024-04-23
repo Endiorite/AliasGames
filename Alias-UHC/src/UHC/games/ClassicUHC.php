@@ -85,9 +85,9 @@ class ClassicUHC extends \Alias\game\Game
     public function getVariants(): array
     {
         return [
-            new GameVariant(
+            "classic" => new GameVariant(
                 "classic",
-                new GameInformation("classic_uhc"),
+                new GameInformation("classic_uhc", 1, 5, 10, false, false, "UCH Run"),
                 [
                     new GeneratedMap("basicgame_generator", new UHCSpawner(1000, 1000))
                 ]
@@ -103,5 +103,10 @@ class ClassicUHC extends \Alias\game\Game
     public function getType(): GameType
     {
         return GameType::LAST_SURVIVOR;
+    }
+
+    public function getGameInformation(): GameInformation
+    {
+        return new GameInformation("classic_uhc", "UHC Run", "UHC But Fast", false, true);
     }
 }

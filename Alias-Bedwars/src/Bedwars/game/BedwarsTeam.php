@@ -31,7 +31,7 @@ class BedwarsTeam extends \Alias\game\Team
     {
         $this->bedPosition = $bedPosition;
         $this->dyeColor = $dyeColor;
-        $this->teamUpgrade = new TeamUpgrade();
+        $this->teamUpgrade = new TeamUpgrade($this);
         parent::__construct($name, $identifier, $max_players);
     }
 
