@@ -31,7 +31,7 @@ class Utils
     }
 
     public static function playerHasCountItem(Player $player, Item $item, int $count): bool{
-        $count = self::getItemCountInInventory($player, $item);
-        return $count >= $count;
+        $counts = self::getItemCountInInventory($player, $item);
+        return $counts >= $count;
     }
 }

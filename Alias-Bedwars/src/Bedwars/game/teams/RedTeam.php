@@ -15,7 +15,6 @@ class RedTeam extends BedwarsTeam
         parent::__construct(
             "§cRed",
             "red",
-            new Vector3(139, 90, 248),
             DyeColor::RED(),
             $max_players);
     }

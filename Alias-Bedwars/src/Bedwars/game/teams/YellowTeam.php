@@ -22,6 +22,6 @@ class YellowTeam extends \Bedwars\game\BedwarsTeam
 {
     public function __construct(int $max_players = 2)
     {
-        parent::__construct("§eYellow", "yellow", new Vector3(137, 87, 436), DyeColor::YELLOW(), $max_players);
+        parent::__construct("§eYellow", "yellow", DyeColor::YELLOW(), $max_players);
     }
 }

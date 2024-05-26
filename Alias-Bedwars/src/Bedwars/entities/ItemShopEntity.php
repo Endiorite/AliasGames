@@ -74,6 +74,7 @@ class ItemShopEntity extends \pocketmine\entity\Entity
 
         $inv = new ItemShopInv();
         $inv->setCategories($game->getItemShop());
+        $inv->setCategory(array_key_first($game->getItemShop()));
         $inv->display($player);
         $inv->send($player);
     }

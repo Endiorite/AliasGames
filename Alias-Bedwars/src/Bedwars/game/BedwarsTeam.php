@@ -17,7 +17,7 @@ use pocketmine\world\Position;
 class BedwarsTeam extends \Alias\game\Team
 {
 
-    private Vector3 $bedPosition;
+    private Position $bedPosition;
     private bool $bedDestroy = false;
     private int $teamDestroy = 0;
     private DyeColor $dyeColor;
@@ -27,9 +27,8 @@ class BedwarsTeam extends \Alias\game\Team
      */
     private array $generators = [];
 
-    public function __construct(string $name, string $identifier, Vector3 $bedPosition, DyeColor $dyeColor, int $max_players = 2)
+    public function __construct(string $name, string $identifier, DyeColor $dyeColor, int $max_players = 2)
     {
-        $this->bedPosition = $bedPosition;
         $this->dyeColor = $dyeColor;
         $this->teamUpgrade = new TeamUpgrade($this);
         parent::__construct($name, $identifier, $max_players);
@@ -105,14 +104,22 @@ class BedwarsTeam extends \Alias\game\Team
         $this->bedDestroy = true;
     }
 
+    /**
+     * @param Position $bedPosition
+     */
+    public function setBedPosition(Position $bedPosition): void
+    {
+        $this->bedPosition = $bedPosition;
+    }
+
     public function canRespawn(): bool{
         return !$this->bedDestroy;
     }
 
     /**
-     * @return Vector3
+     * @return Position
      */
-    public function getBedPosition(): Vector3
+    public function getBedPosition(): Position
     {
         return $this->bedPosition;
     }

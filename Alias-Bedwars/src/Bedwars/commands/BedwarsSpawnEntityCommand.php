@@ -15,6 +15,7 @@
 namespace Bedwars\commands;
 
 use Bedwars\entities\ItemShopEntity;
+use Bedwars\entities\UpgraderEntity;
 use pocketmine\command\CommandSender;
 use pocketmine\lang\Translatable;
 use pocketmine\player\Player;
@@ -41,6 +42,10 @@ class BedwarsSpawnEntityCommand extends \pocketmine\command\Command
         switch ($entity){
             case "shop":
                 $entity = new ItemShopEntity($sender->getLocation(), null);
+                $entity->spawnToAll();
+                break;
+            case "upgrade":
+                $entity = new UpgraderEntity($sender->getLocation(), null);
                 $entity->spawnToAll();
                 break;
         }

@@ -24,7 +24,7 @@ class GreenTeam extends BedwarsTeam
 
     public function __construct(int $max_players = 2)
     {
-        parent::__construct("§2Green", "green", new Vector3(52, 89, 336), DyeColor::GREEN(), $max_players);
+        parent::__construct("§2Green", "green", DyeColor::GREEN(), $max_players);
     }
 
 }

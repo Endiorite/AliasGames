@@ -13,7 +13,7 @@ class PvpBehavior extends \Alias\game\behaviors\Behavior
 
     public function __construct(int $startAt = 10)
     {
-        $this->startAt = $startAt;
+        $this->startAt = $startAt*60;
     }
 
     public function getName(): string

@@ -23,7 +23,7 @@ class BlueBedwars extends \Bedwars\game\BedwarsTeam
 
     public function __construct(int $max_players = 2)
     {
-        parent::__construct("§9Blue", "blue", new Vector3(227, 88, 339), DyeColor::BLUE(), $max_players);
+        parent::__construct("§9Blue", "blue", DyeColor::BLUE(), $max_players);
     }
 
 }

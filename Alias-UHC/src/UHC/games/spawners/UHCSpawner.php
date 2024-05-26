@@ -22,8 +22,20 @@ class UHCSpawner extends \Alias\game\spawners\GameSpawner
     {
         $x = mt_rand(-$this->minPosition, $this->maxPosition);
         $z = mt_rand(-$this->minPosition, $this->maxPosition);
-        $safeSpawn = $game->getWorld()->getSafeSpawn(new Vector3($x, 1000, $z));
-        $player->teleport($safeSpawn);
-        return $safeSpawn;
+        return Position::fromObject(new Vector3($x, 1000, $z), $game->getWorld());
+    }
+
+    public static function teleport(Player $player, Position $position): void
+    {
+        $world = $position->getWorld();
+        $chunkX = $position->getFloorX() >> 4;
+        $chunkZ = $position->getFloorZ() >> 4;
+        if ($world->isChunkPopulated($chunkX, $chunkZ) && $world->isChunkGenerated($chunkX, $chunkZ)){
+            $player->teleport($world->getSafeSpawn($position));
+        }else{
+            $world->orderChunkPopulation($chunkX, $chunkZ, null)->onCompletion(function () use ($player, $position, $world){
+                $player->teleport($world->getSafeSpawn($position));
+            }, fn() => null);
+        }
     }
 }

@@ -5,6 +5,7 @@ namespace UHC\games;
 use Alias\exceptions\BehaviorAlreadyExistsException;
 use Alias\game\behaviors\StartingKitBehavior;
 use Alias\game\GameInformation;
+use Alias\game\GameProperties;
 use Alias\game\GameType;
 use Alias\game\GameVariant;
 use Alias\game\maps\GeneratedMap;
@@ -67,7 +68,7 @@ class ClassicUHC extends \Alias\game\Game
             $scoreboard->setLine(2, "§7Joueurs:    ");
             $scoreboard->setLine(3, "§7Kill(s): §e" . $playerGame->getKills());
             $scoreboard->setLine(4, "      ");
-            $scoreboard->setLine(5, "§7Pvp: " . "");
+            $scoreboard->setLine(5, "§7Pvp: ");
             $scoreboard->setLine(6, "      ");
 
             $scoreboard->setLine(7, "§7Bordure:  ");
@@ -87,7 +88,7 @@ class ClassicUHC extends \Alias\game\Game
         return [
             "classic" => new GameVariant(
                 "classic",
-                new GameInformation("classic_uhc", 1, 5, 10, false, false, "UCH Run"),
+                new GameProperties(1, false, 5, 10),
                 [
                     new GeneratedMap("basicgame_generator", new UHCSpawner(1000, 1000))
                 ]

@@ -85,11 +85,11 @@ class BedwarsGame extends TeamableGame
 
     public function initEvent(): void{
         $this->events = [
-            new DiamondUpgradeEvent("§bDiamond II", 5),
-            new EmeraldUpgradeEvent("§2Emerald III", 10),
-            new DiamondUpgradeEvent("§bDiamond III", 15),
-            new EmeraldUpgradeEvent("§2Emerald III", 20),
-            new BedDestroyEvent(25)
+            new DiamondUpgradeEvent("§bDiamond II", 5*60),
+            new EmeraldUpgradeEvent("§2Emerald III", 10*60),
+            new DiamondUpgradeEvent("§bDiamond III", 15*60),
+            new EmeraldUpgradeEvent("§2Emerald III", 20*20),
+            new BedDestroyEvent(25*20)
         ];
 
     }
@@ -209,31 +209,42 @@ class BedwarsGame extends TeamableGame
             $player = $player->getPlayer();
             $team = $this->getPlayerTeam($player);
             $scoreboard = new Scoreboard($player->getName(), "bedwars.scoreboard", "§l§eBEDWARS");
+            $scoreboard->removeLine(0);
+            $scoreboard->removeLine(1);
+            $scoreboard->removeLine(2);
+            $scoreboard->removeLine(3);
             $scoreboard->setLine(0, TextFormat::GRAY . $this->getUuid());
             $scoreboard->setLine(1, "      ");
             if (!is_null($nextEvent)){
                 $eventTimeConvert = Utils::getInstance()->convertTime($nextEvent->getTime() - time());
-                $scoreboard->setLine(2, $nextEvent->getName() . "§r§f dans §2" . $eventTimeConvert["minutes"] . ":" . $eventTimeConvert["seconds"]);
+                $scoreboard->setLine(2, $nextEvent->getName() . "§r§f §2" . $eventTimeConvert["minutes"] . ":" . $eventTimeConvert["seconds"]);
             }else{
-                $scoreboard->setLine(2, "Fin de la partie dans §2" . $restantTimeConvert["minutes"] . ":" . $restantTimeConvert["seconds"]);
+                $scoreboard->setLine(2, "Fin de partie §2" . $restantTimeConvert["minutes"] . ":" . $restantTimeConvert["seconds"]);
             }
             $scoreboard->setLine(3, "      ");
             $line = 4;
             foreach ($this->getTeams() as $team){
                 $restantPlayerCount = count($team->getRestantPlayers());
                 $icon = match (true){
-                    !$team->isBedDestroy() => '',
+                    !$team->isBedDestroy() => '§a✓',
                     $team->isBedDestroy() && $restantPlayerCount > 0 => "2" . count($team->getRestantPlayers()),
+                    $team->isBedDestroy() && $restantPlayerCount <= 0 => '§c❌',
                     default => ''
                 };
 
-                $you = match ($team->inTeam($player)){
-                    default => " §7YOU"
+                $you = match (true){
+                    $team->inTeam($player->getName()) => " §7YOU",
+                    default => ""
                 };
+                $scoreboard->removeLine($line);
                 $scoreboard->setLine($line, $team->getName() . "§r§f: " . $icon . $you);
                 $line++;
             }
 
+            $scoreboard->removeLine($line+1);
+            $scoreboard->removeLine($line+2);
+            $scoreboard->removeLine($line+3);
+            $scoreboard->removeLine($line+4);
             $scoreboard->setLine($line+1, "   ");
             $scoreboard->setLine($line+2, "Bed Destroyed: §c" . $team->getTeamDestroy());
             $scoreboard->setLine($line+3, "   ");
@@ -344,11 +355,6 @@ class BedwarsGame extends TeamableGame
 
     public function addGenerator(Generator $generator): void{
         $this->generators[] = $generator;
-    }
-
-    public function getPlayerTeam(Player $player): BedwarsTeam|Team|null
-    {
-        return parent::getPlayerTeam($player);
     }
 
     /**

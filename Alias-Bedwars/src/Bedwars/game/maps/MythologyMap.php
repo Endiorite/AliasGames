@@ -3,11 +3,9 @@
 namespace Bedwars\game\maps;
 
 use Alias\game\Game;
-use Alias\game\Map;
 use Alias\game\spawners\GameSpawner;
 use Alias\game\spawners\TeamSpawner;
 use Alias\game\Team;
-use Alias\game\TeamableMap;
 use Bedwars\game\BedwarsGame;
 use Bedwars\game\BedwarsTeam;
 use Bedwars\game\generators\DiamondGenerator;
@@ -29,6 +27,12 @@ class MythologyMap extends BedwarsMap
                 "green" => new Vector3(33, 89, 348),
                 "blue" => new Vector3(246, 88, 327),
                 "yellow" => new Vector3(149, 87, 455)
+            ],
+            [
+                "blue" => new Vector3(227, 88, 339),
+                "green" => new Vector3(52, 89, 336),
+                "red" => new Vector3(139, 90, 248),
+                "yellow" => new Vector3(137, 87, 436)
             ],
             [
                 "red" => [

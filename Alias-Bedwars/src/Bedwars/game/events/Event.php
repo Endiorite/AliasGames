@@ -9,8 +9,7 @@ class Event
 
     private string $name;
     private int $time;
-    public function __construct(string $name, int $time
-    )
+    public function __construct(string $name, int $time)
     {
         $this->time = time() + $time;
         $this->name = $name;
