@@ -72,6 +72,8 @@ class BedwarsGame extends TeamableGame
      */
     private array $generators = [];
 
+    private array $eliminated = [];
+
     public function init(string $uuid, bool $isRanked): void
     {
         parent::init($uuid, $isRanked);
@@ -185,8 +187,7 @@ class BedwarsGame extends TeamableGame
 
     public function onUpdate(): void
     {
-        parent::onUpdate();
-
+        $this->checkEliminated();
         $restantTime = $this->time - time();
         foreach ($this->getTeams() as $team){
             if (count($team->getPlayers()) <= 0){
@@ -320,20 +321,18 @@ class BedwarsGame extends TeamableGame
 
     public function onDeath(PlayerDeathEvent $event): void
     {
-        parent::onDeath($event);
-
         $player = $event->getPlayer();
         $playerGame = $this->getPlayerGame($player->getName());
         $team = $this->getPlayerTeam($player);
 
         if (!$team->canRespawn()){
-            $playerGame->setLife(0);
+            $playerGame->setDeath();
         }
 
-        if (count($team->getRestantPlayers()) <= 0){
-            $this->broadcastMessage(str_replace("{team}", $team->getName(), BedwarsMessages::TEAM_ELIMINATED));
-        }
+        parent::onDeath($event);
     }
+
+
 
     public function getNextEvent(): ?Event{
         $next = null;
@@ -343,6 +342,15 @@ class BedwarsGame extends TeamableGame
             }
         }
         return $next;
+    }
+
+    public function checkEliminated(): void{
+        foreach ($this->getTeams() as $team){
+            if(($team->isDead() && $team->canRespawn()) && !isset($this->eliminated[$team->getIdentifier()])){
+                $this->broadcastMessage(str_replace("{team}", $team->getName(), BedwarsMessages::TEAM_ELIMINATED));
+                $this->eliminated[$team->getIdentifier()] = true;
+            }
+        }
     }
 
     /**

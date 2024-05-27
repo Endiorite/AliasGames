@@ -59,7 +59,6 @@ class ClassicUHC extends \Alias\game\Game
 
     public function onUpdate(): void
     {
-        parent::onUpdate();
         foreach ($this->getAvailablePlayers() as $playerGame){
             $player = $playerGame->getPlayer();
             $scoreboard = new Scoreboard($player->getName(), "uhcrun.scoreboard", "§l§6UHC RUN");
