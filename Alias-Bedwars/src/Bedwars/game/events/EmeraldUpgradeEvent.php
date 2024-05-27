@@ -20,6 +20,8 @@ class EmeraldUpgradeEvent extends Event
         foreach ($game->getGenerators() as $generator){
             if ($generator instanceof EmeraldGenerator){
                 $generator->upgrade();
+                $speed = $generator->getSpeed() - 15;
+                $generator->setSpeed($speed <= 0 ? 15 : $speed);
                 $tier = $generator->getTier();
             }
         }

@@ -47,6 +47,7 @@ class BedwarsMap extends TeamableMap
                 throw new \Exception("Generators for '$identifier' not found in map with base world" . $this->getBaseWorldName());
             }else{
                 foreach($generators as $generator){
+                    $generator->setWorld($game->getWorld());
                     $team->addGenerator($generator);
                 }
             }

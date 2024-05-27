@@ -22,7 +22,7 @@ class TeamUpgrade
 {
 
     private Team $team;
-    public function __construct(Team $team)
+    public function __construct(BedwarsTeam $team)
     {
         $this->team = $team;
     }
@@ -51,26 +51,26 @@ class TeamUpgrade
      */
     public function upgradeForge(): void
     {
-        $team =$this->team;
+        $team = $this->team;
         $this->forgeLevel++;
         switch ($this->forgeLevel){
             case 1:
                 foreach ($team->getGenerators() as $index => $generator){
                     if ($index >= 2) break;
-                    $generator->setSpeed(18);
+                    $generator->setSpeed(10);
                 }
                 break;
             case 2:
                 foreach ($team->getGenerators() as $index => $generator){
                     if ($index >= 2) break;
-                    $generator->setSpeed(10);
+                    $generator->setSpeed(5);
                 }
                 break;
             case 3:
                 foreach ($team->getGenerators() as $index => $generator){
                     $emerald = VanillaItems::EMERALD();
                     if ($generator->getItem() instanceof $emerald){
-                        $generator->setSpeed(16);
+                        $generator->setSpeed(15);
                         break;
                     }
                 }
@@ -78,12 +78,12 @@ class TeamUpgrade
             case 4:
                 foreach ($team->getGenerators() as $index => $generator){
                     if ($index >= 3) break;
-                    $generator->setSpeed(6);
+                    $generator->setSpeed(3);
                 }
                 break;
             case 5:
                 foreach ($team->getGenerators() as $generator){
-                    $generator->setSpeed(6);
+                    $generator->setSpeed(2);
                 }
                 break;
         }

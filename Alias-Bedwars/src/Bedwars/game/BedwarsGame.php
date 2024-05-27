@@ -6,7 +6,6 @@ use Alias\exceptions\BehaviorAlreadyExistsException;
 use Alias\game\Game;
 use Alias\game\GameInformation;
 use Alias\game\GameProperties;
-use Alias\game\GameType;
 use Alias\game\GameVariant;
 use Alias\game\maps\Map;
 use Alias\game\RankedInformation;
@@ -93,10 +92,10 @@ class BedwarsGame extends TeamableGame
     public function initEvent(): void{
         $this->events = [
             new DiamondUpgradeEvent("§bDiamond II", 5*60),
-            new EmeraldUpgradeEvent("§2Emerald III", 10*60),
+            new EmeraldUpgradeEvent("§2Emerald II", 10*60),
             new DiamondUpgradeEvent("§bDiamond III", 15*60),
-            new EmeraldUpgradeEvent("§2Emerald III", 20*20),
-            new BedDestroyEvent(25*20)
+            new EmeraldUpgradeEvent("§2Emerald III", 20*60),
+            new BedDestroyEvent(25*60)
         ];
 
     }
@@ -210,7 +209,7 @@ class BedwarsGame extends TeamableGame
 
         $restantTimeConvert = Utils::getInstance()->convertTime($restantTime);
 
-        $nextEvent = $this->getNextEvent();
+        $nextEvent = $this->events[array_key_first($this->events)];
         foreach ($this->getAvailablePlayers() as $player){
             $player = $player->getPlayer();
             $team = $this->getPlayerTeam($player);
@@ -272,6 +271,7 @@ class BedwarsGame extends TeamableGame
     {
         parent::onRespawn($event);
         $player = $event->getPlayer();
+        /** @var BedwarsTeam $team */
         $team = $this->getPlayerTeam($player);
         $upgrade = $team->getTeamUpgrade();
 
@@ -281,10 +281,10 @@ class BedwarsGame extends TeamableGame
         }
 
         $player->getInventory()->addItem($sword);
-        $helmet = VanillaItems::LEATHER_CAP()->setCustomColor($team->getDyeColor());
-        $chestplate = VanillaItems::LEATHER_TUNIC()->setCustomColor($team->getDyeColor());
-        $leggings = VanillaItems::LEATHER_PANTS()->setCustomColor($team->getDyeColor());
-        $boots = VanillaItems::LEATHER_BOOTS()->setCustomColor($team->getDyeColor());
+        $helmet = VanillaItems::LEATHER_CAP()->setCustomColor($team->getDyeColor()->getRgbValue());
+        $chestplate = VanillaItems::LEATHER_TUNIC()->setCustomColor($team->getDyeColor()->getRgbValue());
+        $leggings = VanillaItems::LEATHER_PANTS()->setCustomColor($team->getDyeColor()->getRgbValue());
+        $boots = VanillaItems::LEATHER_BOOTS()->setCustomColor($team->getDyeColor()->getRgbValue());
 
         if ($upgrade->getProtectionArmor() > 0){
             $enchant = new EnchantmentInstance(VanillaEnchantments::PROTECTION(), $upgrade->getProtectionArmor());
@@ -311,18 +311,6 @@ class BedwarsGame extends TeamableGame
         }
 
         parent::onDeath($event);
-    }
-
-
-
-    public function getNextEvent(): ?Event{
-        $next = null;
-        foreach ($this->events as $event){
-            if (is_null($next) or ($next->getTime() - time()) > ($event->getTime() - time())){
-                $next = $event;
-            }
-        }
-        return $next;
     }
 
     public function checkEliminated(): void{
@@ -373,11 +361,6 @@ class BedwarsGame extends TeamableGame
     public function getUpgradeShop(): array
     {
         return $this->upgradeShop;
-    }
-
-    public function getType(): GameType
-    {
-        return GameType::CUSTOM;
     }
 
     public function getMap(): null|Map|BedwarsMap

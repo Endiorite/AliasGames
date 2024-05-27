@@ -6,7 +6,6 @@ use Alias\exceptions\BehaviorAlreadyExistsException;
 use Alias\game\behaviors\StartingKitBehavior;
 use Alias\game\GameInformation;
 use Alias\game\GameProperties;
-use Alias\game\GameType;
 use Alias\game\GameVariant;
 use Alias\game\maps\GeneratedMap;
 use Alias\game\RankedInformation;
@@ -98,11 +97,6 @@ class ClassicUHC extends \Alias\game\Game
     public function getRankedInformation(): ?RankedInformation
     {
         return null;
-    }
-
-    public function getType(): GameType
-    {
-        return GameType::LAST_SURVIVOR;
     }
 
     public function getGameInformation(): GameInformation

@@ -7,6 +7,8 @@ use pocketmine\entity\Location;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\item\Item;
 use pocketmine\math\Vector3;
+use pocketmine\utils\TextFormat;
+use pocketmine\world\particle\FloatingTextParticle;
 use pocketmine\world\Position;
 use pocketmine\world\World;
 
@@ -18,7 +20,7 @@ abstract class Generator
     public int $lastUpdate = 0;
     private int $speed = 15;
     private int $tier = 1;
-    private ?ItemEntity $entity = null;
+    private ?FloatingTextParticle $entity = null;
     public function __construct(int $defaultSpeed, Vector3 $position)
     {
         $this->position = $position;
@@ -46,9 +48,6 @@ abstract class Generator
 
     public function upgrade(): void{
         $this->tier++;
-        if ($this->hasNamedTag()){
-            $this->entity->setNameTag($this->getName() . " " . str_repeat("I", $this->tier));
-        }
     }
 
     /**
@@ -85,8 +84,14 @@ abstract class Generator
 
     public function onUpdate(): void{
         if (is_null($this->getWorld())) return;
-        if(is_null($this->entity)){
-            $this->spawnEntity();
+        if(!is_null($this->entity)){
+            $this->entity->setText($this->getName() . " " . str_repeat("I", $this->tier) . "\n" .
+                TextFormat::YELLOW . "Spawns in " . TextFormat::RED . ($time = ($this->speed - (time() - $this->lastUpdate))) . TextFormat::YELLOW . ($time === 1 ? " second" : " seconds"));
+            foreach ($this->entity->encode($this->position->asVector3()->add(0, 1, 0)) as $packet) {
+                foreach ($this->getWorld()->getPlayers() as $player) {
+                    $player->getNetworkSession()->sendDataPacket($packet);
+                }
+            }
         }
         if (time() - $this->lastUpdate >= $this->speed){
             $this->generate();
@@ -94,13 +99,10 @@ abstract class Generator
     }
 
     public function spawnEntity(): void{
-        $this->entity = new ItemEntity(Location::fromObject($this->getPosition(), $this->world), $this->getItem());
-        $this->entity->setPickupDelay(ItemEntity::NEVER_DESPAWN);
-        $this->entity->setDespawnDelay(ItemEntity::NEVER_DESPAWN);
-        $this->entity->setNameTagAlwaysVisible();
-        $this->entity->setNameTagVisible();
-        $this->entity->setNameTag($this->getName() . " " . str_repeat("I", $this->tier));
-        $this->entity->spawnToAll();
+        $this->entity = new FloatingTextParticle(
+            $this->getName() . " " . str_repeat("I", $this->tier) . "\n" .
+            TextFormat::YELLOW . "Spawns in " . TextFormat::RED . ($time = ($this->speed - (time() - $this->lastUpdate))) . TextFormat::YELLOW . ($time === 1 ? " second" : " seconds"));
+        $this->getWorld()->addParticle($this->getPosition()->add(0, 1, 0), $this->entity);
     }
 
     /**
@@ -114,9 +116,10 @@ abstract class Generator
 
     public function generate(): void{
         $world = $this->getWorld();
-        $world->dropItem($this->getPosition(), clone $this->getItem());
+        $world->dropItem($this->getPosition(), clone $this->getItem(), new Vector3(0, 0, 0));
         $this->lastUpdate = time();
     }
+
     abstract public function getBlockItem(): Item;
     abstract public function getItem(): Item;
     abstract public function getName(): string;

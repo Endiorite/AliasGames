@@ -43,7 +43,7 @@ class ItemShopInv extends \muqsit\invmenu\InvMenu
     private string $currentCategory = "block";
     public function __construct()
     {
-        parent::__construct(InvMenuHandler::getTypeRegistry()->get(InvMenu::TYPE_CHEST));
+        parent::__construct(InvMenuHandler::getTypeRegistry()->get(InvMenu::TYPE_DOUBLE_CHEST));
 
         $menu = $this;
         $this->setListener(InvMenu::readonly(function(DeterministicInvMenuTransaction $transaction) use ($menu): void{
@@ -60,6 +60,7 @@ class ItemShopInv extends \muqsit\invmenu\InvMenu
             if (($categoryName = $nbt->getString("categoryShop", "default")) !== "default"){
                 $menu->setCategory($categoryName);
                 $menu->display($player);
+                $this->send($player);
                 return;
             }
 
@@ -75,7 +76,7 @@ class ItemShopInv extends \muqsit\invmenu\InvMenu
                 };
 
                 if (Utils::playerHasCountItem($player, $money, $price)){
-                    foreach ($game->getItemShop()[$explode[0]][$explode[1]] as $item){
+                    foreach ($game->getItemShop()[$explode[0]]->getItems()[$explode[1]] as $item){
                         if ($item instanceof Armor){
                             if ($upgrade->getProtectionArmor() > 0){
                                 $enchant = new EnchantmentInstance(VanillaEnchantments::PROTECTION(), $upgrade->getProtectionArmor());
