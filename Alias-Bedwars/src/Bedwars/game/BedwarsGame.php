@@ -2,6 +2,7 @@
 
 namespace Bedwars\game;
 
+use Alias\exceptions\BehaviorAlreadyExistsException;
 use Alias\game\Game;
 use Alias\game\GameInformation;
 use Alias\game\GameProperties;
@@ -74,6 +75,9 @@ class BedwarsGame extends TeamableGame
 
     private array $eliminated = [];
 
+    /**
+     * @throws BehaviorAlreadyExistsException
+     */
     public function init(string $uuid, bool $isRanked): void
     {
         parent::init($uuid, $isRanked);
@@ -82,6 +86,7 @@ class BedwarsGame extends TeamableGame
         $this->initTeam();
         $this->initUpgrade();
         $this->initEvent();
+        $this->addBehavior(new BedwarsBehavior());
         $this->time = time() + 30*60;
     }
 
@@ -261,30 +266,6 @@ class BedwarsGame extends TeamableGame
             }
         }
 
-    }
-
-    public function onBlockBreak(BlockBreakEvent $event): void
-    {
-        $block = $event->getBlock();
-        $position = $block->getPosition();
-        $player = $event->getPlayer();
-
-        $playerTeam = $this->getPlayerTeam($player);
-        if (is_null($playerTeam)) return;
-
-        foreach ($this->getTeams() as $team){
-            if ($team->getBedPosition()->equals($position->asVector3())){
-                if ($team->inTeam($player->getName())){
-                    $event->cancel();
-                    $player->sendMessage(BedwarsMessages::CANT_BREAK_YOUR_BED);
-                }else{
-                    $this->broadcastMessage(BedwarsMessages::BED_BREAK, ["{player}", "{team}"], [$player->getName(), $team->getName()]);
-                    $team->bedBreak();
-
-                    $playerTeam->addTeamDestroy();
-                }
-            }
-        }
     }
 
     public function onRespawn(PlayerRespawnEvent $event): void
